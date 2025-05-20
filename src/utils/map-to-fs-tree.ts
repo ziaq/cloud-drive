@@ -7,6 +7,7 @@ export function mapToFsTree(fsItems: FsItem[]): FsItemTree {
 
   fsItems.forEach(fsItem => {
     fsItemsById[fsItem.id] = fsItem;
+    fsItem.children = [];
   });
 
   Object.values(fsItemsById).forEach(fsItem => {
