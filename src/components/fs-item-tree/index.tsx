@@ -1,12 +1,15 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useFsStore } from "@/store/fs-store";
 import { FsItemList } from "./fs-item-list";
+import { useCurrentDirId } from "@/hooks/use-current-dir-id";
+import { useFsNavigation } from "@/hooks/use-fs-navigation";
 import styles from "./fs-item-tree.module.css";
 
 export function FsItemTree() {
-  const [currentDirId, setCurrentDirId] = useState<number | null>(null);
+  const currentDirId = useCurrentDirId();
+  const { openDirectory, goBack } = useFsNavigation();
 
   const {
     fsTree,
@@ -18,8 +21,10 @@ export function FsItemTree() {
   } = useFsStore();
 
   useEffect(() => {
-    fetchAndSetFsItems();
-  }, [fetchAndSetFsItems]);
+    if (!fsTree.rootFsItems.length) {
+      fetchAndSetFsItems();
+    }
+  }, [fetchAndSetFsItems, fsTree.rootFsItems.length]);
 
   if (isLoading) return <div className={styles.state}>Loading...</div>;
   if (isFetchError) return <div className={styles.state}>Failed to load files</div>;
@@ -38,7 +43,7 @@ export function FsItemTree() {
       <div className={styles['file-list']}>
         <FsItemList
           items={items}
-          onDirClick={setCurrentDirId}
+          onDirClick={openDirectory}
           onToggleFavorite={toggleFavorite}
         />
       </div>
@@ -47,7 +52,7 @@ export function FsItemTree() {
         <button
           className={styles.back}
           onClick={() =>
-            setCurrentDirId(fsTree.fsItemsById[currentDirId]?.parentId ?? null)
+            goBack(fsTree.fsItemsById[currentDirId]?.parentId ?? null)
           }
         >
           Назад
