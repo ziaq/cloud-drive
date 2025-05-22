@@ -1,0 +1,16 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-geist-sans, sans-serif);
+  background: var(--background, #fff);
+  color: var(--foreground, #222);
+}
+
+@media (prefers-color-scheme: dark) {
+  .page {
+    background: #111;
+    color: #fff;
+  }
+}
